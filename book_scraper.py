@@ -82,7 +82,7 @@ class ScraperConfig:
     log_date_fmt: str = field(init=False, default="%d.%m.%Y %H.%M.%S")
     fields: list = field(init=False, default_factory=lambda:["Title", "Price", "Available", "Rating"])
     rating_map: dict = field(init=False, default_factory=lambda:{"One" : 1, "Two" : 2, "Three" : 3, "Four" : 4, "Five" : 5})
-    delay_seconds: float
+    delay_seconds: float = field(init=False, default=0.4)
     book_counter: int = field(init=False, default=0)
     def __post_init__(self): 
         if not (0 < self.delay_seconds < 5):
@@ -100,7 +100,6 @@ class ScraperConfig:
 parser = argparse.ArgumentParser()
 parser.add_argument("-c", "--csv", default="books.csv")
 parser.add_argument("-l", "--log", default="books_scraper_errors.log")
-parser.add_argument("-d", "--delay", type=float, default=0.5)
 parser.add_argument("-n", "--pages", type=int, default=5)
 
 args = parser.parse_args()
@@ -109,12 +108,10 @@ if args.csv:
     csv_name = args.csv
 if args.log:
     log_name = args.log
-if args.delay:
-    delay_seconds = args.delay
 if args.pages:
     npages = args.pages
 
-config = ScraperConfig(csv_name=csv_name, log_file=log_name, delay_seconds=delay_seconds, npages=npages)
+config = ScraperConfig(csv_name=csv_name, log_file=log_name, npages=npages)
 
 # Make the config settings for logger
 logging.basicConfig(filename = config.log_file,
